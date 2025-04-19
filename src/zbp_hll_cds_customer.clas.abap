@@ -1,0 +1,5 @@
+CLASS zbp_hll_cds_customer DEFINITION PUBLIC ABSTRACT FINAL FOR BEHAVIOR OF zhll_cds_customer.
+ENDCLASS.
+
+CLASS zbp_hll_cds_customer IMPLEMENTATION.
+ENDCLASS.

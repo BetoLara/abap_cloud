@@ -1,0 +1,4 @@
+@EndUserText.label: 'Service definition for Customers'
+define service ZHLL_SD_CUSTOMER {
+  expose ZHLL_CDS_CUSTOMER;
+}
