@@ -1,14 +1,18 @@
 managed implementation in class zbp_hll_cds_customer unique;
-//strict ( 2 ); //Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
+//strict ( 1 );
+//Uncomment this line in order to enable strict mode 2. The strict mode has two variants (strict(1), strict(2)) and is prerequisite to be future proof regarding syntax and to be able to release your BO.
 
 define behavior for ZHLL_CDS_CUSTOMER alias Customers
 persistent table zhll_customer
 lock master
 authorization master ( instance )
 //etag master Customer
+late numbering
 {
   create;
   update;
   delete;
-  field ( readonly ) Customer;
+  field ( readonly ) customer;
+
+  determination mcustomer on save { create; }	
 }
