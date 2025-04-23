@@ -1,26 +1,26 @@
-CLASS lsc_zhll_cds_customer DEFINITION INHERITING FROM cl_abap_behavior_saver.
-
-  PROTECTED SECTION.
-
-    METHODS adjust_numbers REDEFINITION.
-
-ENDCLASS.
-
-CLASS lsc_zhll_cds_customer IMPLEMENTATION.
-
-  METHOD adjust_numbers.
-    IF mapped-customers IS NOT INITIAL.
-
-        SELECT MAX( customer ) FROM zhll_customer INTO @DATA(lv_customer).
-
-        DATA(ls_mapped) = VALUE #( mapped-customers[ 1 ] OPTIONAL ).
-        ls_mapped-customer = lv_customer + 1.
-
-        APPEND CORRESPONDING #( ls_mapped ) TO mapped-customers.
-    ENDIF.
-  ENDMETHOD.
-
-ENDCLASS.
+*CLASS lsc_zhll_cds_customer DEFINITION INHERITING FROM cl_abap_behavior_saver.
+*
+*  PROTECTED SECTION.
+*
+*    METHODS adjust_numbers REDEFINITION.
+*
+*ENDCLASS.
+*
+*CLASS lsc_zhll_cds_customer IMPLEMENTATION.
+*
+*  METHOD adjust_numbers.
+*    IF mapped-customers IS NOT INITIAL.
+*
+*        SELECT MAX( customer ) FROM zhll_customer INTO @DATA(lv_customer).
+*
+*        DATA(ls_mapped) = VALUE #( mapped-customers[ 1 ] OPTIONAL ).
+*        ls_mapped-customer = lv_customer + 1.
+*
+*        APPEND CORRESPONDING #( ls_mapped ) TO mapped-customers.
+*    ENDIF.
+*  ENDMETHOD.
+*
+*ENDCLASS.
 
 CLASS lhc_ZHLL_CDS_CUSTOMER DEFINITION INHERITING FROM cl_abap_behavior_handler.
   PRIVATE SECTION.
@@ -29,6 +29,8 @@ CLASS lhc_ZHLL_CDS_CUSTOMER DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING keys REQUEST requested_authorizations FOR Customers RESULT result.
     METHODS mcustomer FOR DETERMINE ON SAVE
       IMPORTING keys FOR Customers~mcustomer.
+    METHODS earlynumbering_create FOR NUMBERING
+      IMPORTING entities FOR CREATE Customers.
 
 ENDCLASS.
 
@@ -73,4 +75,15 @@ CLASS lhc_ZHLL_CDS_CUSTOMER IMPLEMENTATION.
 *      MAPPED DATA(lt_data).
 
   ENDMETHOD.
+
+  METHOD earlynumbering_create.
+    SELECT MAX( customer ) FROM zhll_customer INTO @DATA(lv_customer).
+
+    lv_customer = COND #( WHEN lv_customer IS NOT INITIAL THEN lv_customer + 1
+                    ELSE 1 ).
+
+    mapped-customers = VALUE #( ( %cid = entities[ 1 ]-%cid
+                             customer = lv_customer ) ).
+  ENDMETHOD.
+
 ENDCLASS.
