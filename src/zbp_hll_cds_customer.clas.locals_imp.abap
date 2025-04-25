@@ -29,6 +29,10 @@ CLASS lhc_ZHLL_CDS_CUSTOMER DEFINITION INHERITING FROM cl_abap_behavior_handler.
       IMPORTING keys REQUEST requested_authorizations FOR Customers RESULT result.
     METHODS mcustomer FOR DETERMINE ON SAVE
       IMPORTING keys FOR Customers~mcustomer.
+    METHODS changeStatus FOR MODIFY
+      IMPORTING keys FOR ACTION Customers~changeStatus RESULT result.
+    METHODS get_instance_features FOR INSTANCE FEATURES
+      IMPORTING keys REQUEST requested_features FOR Customers RESULT result.
     METHODS earlynumbering_create FOR NUMBERING
       IMPORTING entities FOR CREATE Customers.
 
@@ -84,6 +88,50 @@ CLASS lhc_ZHLL_CDS_CUSTOMER IMPLEMENTATION.
 
     mapped-customers = VALUE #( ( %cid = entities[ 1 ]-%cid
                              customer = lv_customer ) ).
+  ENDMETHOD.
+
+  METHOD changeStatus.
+  " Set the new overall status
+    MODIFY ENTITIES OF zhll_cds_customer  IN LOCAL MODE
+      ENTITY Customers
+         UPDATE
+           FIELDS ( Status )
+           WITH VALUE #( FOR key IN keys
+                           ( %tky   = key-%tky
+                             Status = 3 ) )
+      FAILED failed
+      REPORTED reported.
+
+    " Fill the response table
+    READ ENTITIES OF zhll_cds_customer IN LOCAL MODE
+      ENTITY Customers
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(customers).
+
+    result = VALUE #( FOR customer IN customers
+                        ( %tky   = customer-%tky
+                          %param = customer ) ).
+  ENDMETHOD.
+
+  METHOD get_instance_features.
+  " Read the customer status of the existing customers
+    READ ENTITIES OF zhll_cds_customer IN LOCAL MODE
+      ENTITY Customers
+        FIELDS ( Status ) WITH CORRESPONDING #( keys )
+      RESULT DATA(customers)
+      FAILED failed.
+
+  result =
+      VALUE #(
+        FOR customer IN customers
+          LET is_accepted =   COND #( WHEN customer-Status = 3
+                                      THEN if_abap_behv=>fc-o-disabled
+                                      ELSE if_abap_behv=>fc-o-enabled  )
+          IN
+            ( %tky                 = customer-%tky
+              %action-changeStatus = is_accepted
+             ) ).
+
   ENDMETHOD.
 
 ENDCLASS.

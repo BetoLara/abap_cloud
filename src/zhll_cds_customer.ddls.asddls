@@ -20,10 +20,18 @@ define root view ZHLL_CDS_CUSTOMER as select from zhll_customer
     @UI.lineItem:[{position: 20, label: 'First Name'}]
     @UI.identification: [{position: 20, importance: #HIGH}]
     name as Name,
-    @UI.lineItem:[{position: 30, label: 'Status', criticality: 'Status'}]
-    @UI.identification: [{position: 30, importance: #HIGH, criticality: 'Status'}]
+    @UI.lineItem:[{position: 30, label: 'Status'},
+    { type: #FOR_ACTION, dataAction: 'changeStatus', label: 'Change' }]
+    @UI.identification: [{position: 30, criticality: 'Status'},
+    { type: #FOR_ACTION, dataAction: 'changeStatus', label: 'Change' }]
     status as Status,
-    
+//    @UI: { lineItem:       [ { position: 40},
+//                            { type: #FOR_ACTION, dataAction: 'changeStatus', label: 'Change' }                            
+//                          ],
+//          identification: [ { position: 40},
+//                            { type: #FOR_ACTION, dataAction: 'changeStatus', label: 'Change' }                            
+//                          ] } 
+//    status,
     @UI.hidden: true
     url as Url 
 }
