@@ -1,3 +1,25 @@
+CLASS lhc_custpo DEFINITION INHERITING FROM cl_abap_behavior_handler.
+
+  PRIVATE SECTION.
+
+    METHODS get_instance_features FOR INSTANCE FEATURES
+      IMPORTING keys REQUEST requested_features FOR Custpo RESULT result.
+
+    METHODS changePrecio FOR MODIFY
+      IMPORTING keys FOR ACTION Custpo~changePrecio RESULT result.
+
+ENDCLASS.
+
+CLASS lhc_custpo IMPLEMENTATION.
+
+  METHOD get_instance_features.
+  ENDMETHOD.
+
+  METHOD changePrecio.
+  ENDMETHOD.
+
+ENDCLASS.
+
 *CLASS lsc_zhll_cds_customer DEFINITION INHERITING FROM cl_abap_behavior_saver.
 *
 *  PROTECTED SECTION.

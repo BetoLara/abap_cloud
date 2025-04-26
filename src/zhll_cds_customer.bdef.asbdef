@@ -17,3 +17,17 @@ early numbering
 
   action ( features : instance ) changeStatus result [1] $self;
 }
+
+define behavior for ZHLL_CDS_CUSTPO alias Custpo
+persistent table zhll_custpo
+lock dependent by _customer
+//etag master Customer
+early numbering
+{
+  update;
+  delete;
+
+  field ( readonly ) Ponumber, Customer ;
+
+  action ( features : instance ) changePrecio result [1] $self;
+}

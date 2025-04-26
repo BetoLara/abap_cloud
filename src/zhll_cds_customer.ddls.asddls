@@ -6,13 +6,21 @@
 @Metadata.ignorePropagatedAnnotations: true
 @UI.headerInfo:{typeName: 'Customer',
 typeNamePlural: 'Customers', imageUrl: 'Url'} 
-define root view ZHLL_CDS_CUSTOMER as select from zhll_customer
+define root view ZHLL_CDS_CUSTOMER as select from zhll_customer as customer
+//association [0..*] to ZHLL_CDS_CUSTPO as _custpo on $projection.Customer = _custpo.Customer
+composition [0..*] of ZHLL_CDS_CUSTPO as _custpo 
 {
     @UI.facet: [ { id:              'Customer',
                    purpose:         #STANDARD,
                    type:            #IDENTIFICATION_REFERENCE,
                    label:           'Customer',
-                   position:        10 } ]
+                   position:        10 } ,
+                 { id:            'POs',
+                 purpose:         #STANDARD,
+                 type:            #LINEITEM_REFERENCE,
+                 label:           'POs',
+                 position:        20,
+                 targetElement:   '_custpo'} ]  
                      
     @UI.lineItem:[{position: 10, label: 'Customer ID'}]
     @UI.identification: [{position: 10, importance: #HIGH}]
@@ -33,5 +41,8 @@ define root view ZHLL_CDS_CUSTOMER as select from zhll_customer
 //                          ] } 
 //    status,
     @UI.hidden: true
-    url as Url 
+    url as Url, 
+    
+    /* associations */
+    _custpo    
 }
